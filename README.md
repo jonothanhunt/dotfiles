@@ -76,6 +76,33 @@ Lazy.nvim, installing itself on first launch. Leader is `Space`.
 Colourscheme is Dracula with a transparent background, so it inherits
 Ghostty's.
 
+## KDE Plasma (optional)
+
+If you're on Plasma, this themes the desktop to match the terminal —
+Dracula colours, JetBrainsMono throughout, and square window corners:
+
+```
+~/dotfiles/kde/apply.sh
+~/dotfiles/kde/apply.sh --revert   # back to Breeze
+```
+
+Assets are pulled from [dracula/gtk](https://github.com/dracula/gtk)'s
+`kde/` directory with a sparse checkout. Everything installs under
+`~/.local/share` and `~/.config` — no sudo, nothing system-wide.
+
+Colours and window decorations apply immediately; **fonts need a logout**,
+because Qt reads them once when an application starts.
+
+Square corners come from routing the decoration through Aurorae, which
+Breeze does not expose a radius setting for.
+
+Optionally `sudo dnf install kvantum` first and re-run — Kvantum restyles
+the widgets themselves (buttons, scrollbars). Without it the colours
+still apply, but widget *shapes* stay Breeze.
+
+Unlike GNOME, Plasma has no libadwaita ceiling: the theme reaches the
+whole desktop rather than stopping at the shell.
+
 ## Per-machine notes
 
 Ghostty's `window-decoration`, `maximize` and `window-padding-*` apply to

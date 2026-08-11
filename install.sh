@@ -122,6 +122,19 @@ done
 # Dracula's git widget shells out to these.
 for c in bc jq; do command -v "$c" >/dev/null || warn "$c missing (dracula's git widget needs it)"; done
 
+# The desktop side is optional and KDE-only, so it is a separate script
+# rather than something this one runs behind your back.
+if [[ "${XDG_CURRENT_DESKTOP:-}" == *KDE* ]]; then
+  say ""
+  say "${bold}5. Desktop${off}"
+  if [[ "$(kreadconfig6 --file kdeglobals --group General --key font 2>/dev/null)" == JetBrainsMono* ]]; then
+    skip "Plasma already themed"
+  else
+    warn "KDE session detected — theme Plasma to match with:"
+    warn "  $REPO/kde/apply.sh"
+  fi
+fi
+
 say ""
 if (( DRY )); then
   say "${bold}Dry run complete.${off} Re-run without --dry-run to apply."
