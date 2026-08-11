@@ -3,9 +3,12 @@ local function enable_transparency()
 end
 return {
     {
-	"ellisonleao/gruvbox.nvim",
+	"loctvl842/monokai-pro.nvim",
 	config = function()
-	    vim.cmd.colorscheme "gruvbox"
+        require("monokai-pro").setup({
+            filter = "ristretto",
+        })
+	    vim.cmd.colorscheme "monokai-pro"
 	    enable_transparency()
 	end
     },
@@ -15,7 +18,7 @@ return {
 	    "nvim-tree/nvim-web-devicons",
 	},
 	opts = {
-	    theme = 'gruvbox',
+	    theme = 'monokai-pro',
 	}
     },
 }
