@@ -1,2 +1,6 @@
 .DS_Store
-lazy-lock.json
+*.bak-*
+
+# Cloned by install.sh, not vendored — kept out so there is no submodule
+# to keep in step. Update with: git -C ~/.config/tmux/plugins/dracula pull
+tmux/plugins/

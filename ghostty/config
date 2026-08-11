@@ -1,0 +1,77 @@
+# Ghostty — Fedora / GNOME Wayland
+# Docs: ghostty +show-config --default --docs
+# Reload live with ctrl+shift+,
+
+# ── Chrome ───────────────────────────────────────────────────────────
+# Kills the GTK headerbar (the "menu bar" with the hamburger + tabs).
+# Move the window with Super+drag, resize from the edges.
+# The menu also lives in the command palette: ctrl+shift+p.
+window-decoration = none
+window-theme = ghostty
+maximize = true
+
+# No margin — column 1 and row 1 sit flush against the window edge.
+window-padding-x = 0
+window-padding-y = 0
+# The window is rarely an exact multiple of the cell size, so a few
+# leftover pixels always remain. `false` parks them all at the right and
+# bottom edges; `true` would split them and hand you back a thin left
+# margin, which is the thing being removed here.
+window-padding-balance = false
+
+# No "resized to 80x24" overlay, no "copied to clipboard" toast.
+resize-overlay = never
+app-notifications = no-clipboard-copy
+
+# ── Aesthetics ───────────────────────────────────────────────────────
+# Ristretto supplies the 16 ANSI colours; the background is forced to
+# true black underneath it. Delete the `theme` line for a plain palette.
+theme = Monokai Pro Ristretto
+background = #000000
+
+# Fully opaque. To bring transparency back, set a value below 1 —
+# note that GNOME/Wayland has no blur protocol, so `background-blur`
+# would stay a no-op here regardless.
+background-opacity = 1
+
+cursor-style = block
+cursor-style-blink = false
+mouse-hide-while-typing = true
+
+# ── Scroll speed ─────────────────────────────────────────────────────
+# Target: one wheel detent on the MX Master 3S = one line.
+#
+# Three layers stack, so the other two are pinned to 1 and this is the
+# only live knob:
+#   tmux  -N 1        (~/.config/tmux/tmux.conf, copy-mode wheel)
+#   nvim  mousescroll=ver:1
+#
+# The 3S's high-resolution wheel emits roughly 1.7 events per physical
+# detent rather than a clean 1, so the multiplier scales that back to
+# ~1.0 rather than being 1 itself. No prefix = applies to both the
+# precision and discrete paths, since GTK on Wayland can report a hi-res
+# wheel either way and this sidesteps having to know which.
+#
+# Too fast? Lower toward 0.4. Too slow, or detents that do nothing at
+# all (the multiplier floored a sub-step to zero)? Raise toward 1.0 and
+# take the extra line. Leave the tmux and nvim numbers at 1.
+mouse-scroll-multiplier = 0.6
+
+# ── Typography ───────────────────────────────────────────────────────
+# "Mono" variant = strict single-width cells, which keeps the tmux
+# status bar and box-drawing characters aligned.
+font-family = JetBrainsMono Nerd Font Mono
+font-size = 13
+adjust-cell-height = 12%
+
+# ── Keybindings ──────────────────────────────────────────────────────
+# There are none. Every shortcut is Ghostty's own default, so the docs
+# at ghostty.org and the command palette both tell the truth.
+#
+# To see the full list:  ghostty +list-keybinds
+# Or in the terminal:    ctrl+shift+p   (command palette, searchable)
+
+# ── Behaviour ────────────────────────────────────────────────────────
+# Safe to skip the close prompt: tmux keeps the session alive anyway.
+confirm-close-surface = false
+scrollback-limit = 10000000
