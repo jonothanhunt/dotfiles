@@ -1,7 +1,7 @@
 # dotfiles
 
-Terminal setup: **Ghostty**, **tmux** and **Neovim**, themed together and
-sharing one scroll-speed calibration.
+Terminal setup: **Ghostty**, **tmux** and **Neovim** — one Dracula palette
+across all three, and one scroll-speed calibration.
 
 ```
 git clone https://github.com/jonothanhunt/dotfiles ~/dotfiles && ~/dotfiles/install.sh
@@ -73,8 +73,8 @@ Lazy.nvim, installing itself on first launch. Leader is `Space`.
 | `Space e` | File tree |
 | `Tab` | Accept Copilot suggestion |
 
-Colourscheme is monokai-pro (ristretto) with a transparent background, so
-it inherits Ghostty's.
+Colourscheme is Dracula with a transparent background, so it inherits
+Ghostty's.
 
 ## Per-machine notes
 

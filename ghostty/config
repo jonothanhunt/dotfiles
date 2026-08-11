@@ -24,10 +24,14 @@ resize-overlay = never
 app-notifications = no-clipboard-copy
 
 # ── Aesthetics ───────────────────────────────────────────────────────
-# Ristretto supplies the 16 ANSI colours; the background is forced to
-# true black underneath it. Delete the `theme` line for a plain palette.
-theme = Monokai Pro Ristretto
-background = #000000
+# Dracula, matching the tmux status bar and the Neovim colourscheme.
+# All three layers now share one palette: background #282a36,
+# foreground #f8f8f2.
+#
+# No `background` override here on purpose — the theme's own #282a36 is
+# what the tmux bar and nvim are drawn against, and forcing black back
+# would make the status bar's dark segments float on a different ground.
+theme = Dracula
 
 # Fully opaque. To bring transparency back, set a value below 1 —
 # note that GNOME/Wayland has no blur protocol, so `background-blur`
