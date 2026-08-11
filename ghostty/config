@@ -24,14 +24,41 @@ resize-overlay = never
 app-notifications = no-clipboard-copy
 
 # ── Aesthetics ───────────────────────────────────────────────────────
-# Dracula, matching the tmux status bar and the Neovim colourscheme.
-# All three layers now share one palette: background #282a36,
-# foreground #f8f8f2.
+# Gruvbox, matching the tmux status bar and the Neovim colourscheme.
+# All three layers share one palette: cream foreground #ebdbb2 over a
+# black ground, with the warm accents — harvest gold #fabd2f, burnt
+# orange #fe8019, olive #b8bb26 — doing the work.
 #
-# No `background` override here on purpose — the theme's own #282a36 is
-# what the tmux bar and nvim are drawn against, and forcing black back
-# would make the status bar's dark segments float on a different ground.
-theme = Dracula
+# "Dark Hard" rather than plain "Dark": with the background forced to
+# black below, the only thing this choice still decides is how dark the
+# theme's own surfaces are, and Hard's are the closest to the black they
+# sit on.
+theme = Gruvbox Dark Hard
+
+# Adwaita's own dark window background, so the terminal is the same shade
+# as every other app on the desktop instead of a darker rectangle among
+# them. Read straight out of libadwaita rather than copied from a blog
+# post — check it after a GNOME upgrade with:
+#
+#   python3 -c "import gi;gi.require_version('Gtk','4.0');gi.require_version('Adw','1');\
+# from gi.repository import Gtk,Adw;Adw.init();\
+# sm=Adw.StyleManager.get_default();sm.set_color_scheme(Adw.ColorScheme.FORCE_DARK);\
+# print(Gtk.Window().get_style_context().lookup_color('window_bg_color')[1].to_string())"
+#
+# This must stay *after* the `theme` line: Ghostty loads the theme first
+# and then lets the rest of the file win, so moving it above would
+# silently do nothing.
+#
+# One honest caveat: Adwaita's darks are very slightly cool (#222226 has
+# more blue than red) while Gruvbox is warm throughout. At this lightness
+# the cast is nearly invisible, but it is the reason this will never be
+# quite as seamless as a Gruvbox grey would be — it is trading palette
+# purity for matching the desktop, deliberately.
+#
+# The palette itself is untouched, so ANSI 0 stays #1d2021 and the tmux
+# status bar's dark segments still read as a surface sitting on top of
+# the terminal rather than dissolving into it.
+background = #222226
 
 # Fully opaque. To bring transparency back, set a value below 1 —
 # note that GNOME/Wayland has no blur protocol, so `background-blur`

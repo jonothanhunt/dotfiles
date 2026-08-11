@@ -2,5 +2,6 @@
 *.bak-*
 
 # Cloned by install.sh, not vendored — kept out so there is no submodule
-# to keep in step. Update with: git -C ~/.config/tmux/plugins/dracula pull
+# to keep in step. Update with:
+#   git -C ~/.config/tmux/plugins/tmux-gruvbox pull
 tmux/plugins/
