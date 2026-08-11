@@ -40,9 +40,14 @@ return {
         opts = {
             options = {
                 theme = "gruvbox",
-                -- The same powerline glyphs the tmux bar uses, so the
-                -- statusline and the status bar directly below it read
-                -- as one continuous strip rather than two designs.
+                -- Deliberately empty: segments are flat blocks of colour
+                -- with no powerline arrows between them. The tmux bar
+                -- directly below is built the same way, off this theme's
+                -- palette, so the two read as one continuous strip.
+                --
+                -- Empty strings, not glyphs — a separator here would have
+                -- to be matched by hand in tmux.conf, which cannot draw
+                -- lualine's arrows without the plugin that owns its bar.
                 section_separators = { left = "", right = "" },
                 component_separators = { left = "", right = "" },
                 globalstatus = true,

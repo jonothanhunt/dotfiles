@@ -10,14 +10,23 @@ window-decoration = none
 window-theme = ghostty
 maximize = true
 
-# No margin — column 1 and row 1 sit flush against the window edge.
+# No margin of our own — nothing is added beyond what the grid needs.
 window-padding-x = 0
 window-padding-y = 0
+
 # The window is rarely an exact multiple of the cell size, so a few
-# leftover pixels always remain. `false` parks them all at the right and
-# bottom edges; `true` would split them and hand you back a thin left
-# margin, which is the thing being removed here.
-window-padding-balance = false
+# leftover pixels always remain no matter what the two lines above say.
+# The only question is where they go.
+#
+# `false` parks the whole remainder at the right and bottom edges. That
+# gives a true flush-left column 1, but the gap beside the last column is
+# then however many pixels happen to be left over — anywhere from 0 to
+# nearly a full cell, changing every time the window is resized.
+#
+# `true` splits the remainder evenly instead. Both sides get half, so the
+# margin is symmetric and the last column is framed the same as the
+# first. Half a cell at most, and stable.
+window-padding-balance = true
 
 # No "resized to 80x24" overlay, no "copied to clipboard" toast.
 resize-overlay = never
