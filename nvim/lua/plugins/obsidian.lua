@@ -16,21 +16,8 @@ return {
       end,
     })
   end,
-  opts = {
-    workspaces = {
-      {
-        name = "wiki",
-        path = "~/Documents/personal/wiki",
-      },
-    },
-    notes_subdir = "notes",
-    new_notes_location = "notes_subdir",
-    note_id_func = function(title)
-      if title ~= nil then
-        return title
-      end
-      return tostring(os.time())
-    end,
-    disable_frontmatter = false,
-  },
+  -- No `opts` here on purpose: this only makes the plugin available for
+  -- markdown files. Actual vault config (workspace path, notes dir, etc.)
+  -- lives in each vault's own `.nvim.lua`, loaded via 'exrc' — not here,
+  -- so this file never needs to know where any particular vault lives.
 }
