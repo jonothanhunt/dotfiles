@@ -32,8 +32,5 @@ return {
       return tostring(os.time())
     end,
     disable_frontmatter = false,
-    checkbox = {
-      order = { " ", "x" },
-    },
   },
 }
