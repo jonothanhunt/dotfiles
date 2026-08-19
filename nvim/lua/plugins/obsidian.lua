@@ -20,7 +20,7 @@ return {
     workspaces = {
       {
         name = "wiki",
-        path = "~/wiki",
+        path = "~/Documents/personal/wiki",
       },
     },
     notes_subdir = "notes",
