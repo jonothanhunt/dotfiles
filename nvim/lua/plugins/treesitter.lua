@@ -13,6 +13,9 @@ return {
 		"lua",
 		"tsx",
 		"typescript",
+		"markdown",
+		"markdown_inline",
+		"yaml",
 	    },
 	    auto_install = false,
 	})
