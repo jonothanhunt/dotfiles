@@ -14,3 +14,27 @@ vim.opt.mousescroll = "ver:1,hor:6"
 -- (prompts once per file via :trust). Lets a project (e.g. a wiki repo) carry
 -- its own plugin config instead of dotfiles hardcoding a path to it.
 vim.opt.exrc = true
+
+-- Persist undo history to disk, so it survives closing and reopening a file.
+vim.opt.undofile = true
+
+-- Case-insensitive search, except when the pattern itself has a capital
+-- letter in it — then go case-sensitive.
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
+
+-- New vertical/horizontal splits open to the right / below rather than
+-- the left / above, matching where you'd expect them.
+vim.opt.splitright = true
+vim.opt.splitbelow = true
+
+-- Default (4000ms) is how long nvim waits before firing CursorHold and
+-- writing swap files — LSP diagnostics and gitsigns both key off it, and
+-- 4s reads as "broken" for both. 250ms is the common lower bound before
+-- it starts costing noticeable CPU on every pause.
+vim.opt.updatetime = 250
+
+-- Reserve the gutter's diagnostic-sign column always, not only when a
+-- sign is present — otherwise text visibly shifts left/right as
+-- diagnostics come and go.
+vim.opt.signcolumn = "yes"

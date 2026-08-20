@@ -8,11 +8,17 @@ return {
 		enable = true,
 	    },
 	    indent = { enable = true },
-	    autotage = { enable = true },
 	    ensure_installed = {
 		"lua",
 		"tsx",
 		"typescript",
+		"javascript",
+		"astro",
+		"html",
+		"css",
+		"json",
+		"bash",
+		"python",
 		"markdown",
 		"markdown_inline",
 		"yaml",
@@ -21,5 +27,3 @@ return {
 	})
     end
 }
-
-
