@@ -10,9 +10,19 @@ return {
       "neovim/nvim-lspconfig",
     },
     -- mason-lspconfig installs each server via mason, then calls
-    -- vim.lsp.enable() for it automatically (default behaviour) — no
-    -- imperative per-server .setup{} calls needed, that's the old
-    -- lspconfig-only pattern from before Neovim 0.11 had native LSP config.
+    -- vim.lsp.enable() for it automatically — no imperative per-server
+    -- .setup{} calls needed, that's the old lspconfig-only pattern from
+    -- before Neovim 0.11 had native LSP config.
+    --
+    -- automatic_enable is deliberately scoped to exactly this list, not
+    -- left as its `true` default. Default auto-enables *any* mason
+    -- package that happens to match an nvim-lspconfig server name,
+    -- whether or not it was ever meant to run as an LSP client — bit
+    -- me twice: stylua has an experimental `--lsp` mode this installed
+    -- version doesn't actually support (it's only here as a formatter,
+    -- see conform.lua), and an eslint-lsp package already sitting in
+    -- mason from before this config existed got silently auto-enabled
+    -- too, unasked.
     opts = {
       ensure_installed = {
         "ts_ls", -- TypeScript / JavaScript / TSX
@@ -25,6 +35,18 @@ return {
         "bashls",
         "pyright", -- Python types
         "ruff", -- Python lint + format, replaces flake8/black/isort
+      },
+      automatic_enable = {
+        "ts_ls",
+        "astro",
+        "html",
+        "cssls",
+        "tailwindcss",
+        "jsonls",
+        "lua_ls",
+        "bashls",
+        "pyright",
+        "ruff",
       },
     },
     config = function(_, opts)
