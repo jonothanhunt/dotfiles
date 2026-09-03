@@ -1,16 +1,17 @@
+-- lazy.nvim plugin spec for the wiki. Goes in your dotfiles (e.g.
+-- ~/.config/nvim/lua/plugins/obsidian.lua), NOT in the wiki — lazy resolves
+-- plugin specs at startup, long before a wiki directory is the cwd.
+--
+-- Deliberately no `opts`/`config` here: every wiki-specific setting lives in
+-- the wiki's own `.nvim.lua`, which calls `require("obsidian").setup()`
+-- itself. Setting options in both places is how they drift.
 return {
-  "epwalsh/obsidian.nvim",
-  version = "*",
+  -- The community fork. The original epwalsh/obsidian.nvim is unmaintained,
+  -- and the fork has since renamed enough options (`frontmatter.enabled`,
+  -- `open.func`) and commands (`:Obsidian <subcommand>`) that they are not
+  -- drop-in interchangeable.
+  "obsidian-nvim/obsidian.nvim",
+  version = "*", -- latest release rather than main
+  -- Loaded explicitly by the wiki's .nvim.lua, so no ft/cmd trigger here.
   lazy = true,
-  ft = "markdown",
-  dependencies = {
-    "nvim-lua/plenary.nvim",
-  },
-  -- No `opts` here on purpose: this only makes the plugin available for
-  -- markdown files. Actual vault config (workspace path, notes dir, etc.)
-  -- lives in each vault's own `.nvim.lua`, loaded via 'exrc' — not here,
-  -- so this file never needs to know where any particular vault lives.
-  --
-  -- Markdown-wide settings (conceallevel, spell, etc.) live in
-  -- after/ftplugin/markdown.lua, nvim's own convention for this — not here.
 }
