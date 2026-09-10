@@ -139,6 +139,19 @@ else
   ok "tmux-gruvbox cloned"
 fi
 
+# TPM itself always clones to ~/.tmux/plugins/tpm — that path is fixed by its
+# own bootstrap convention (the `run` line in tmux.conf), not XDG-aware like
+# the plugins it then manages. Once tmux.conf is sourced, prefix + I installs
+# tmux-resurrect the same way tmux-gruvbox is cloned above.
+TPM="$HOME/.tmux/plugins/tpm"
+if [[ -d "$TPM/.git" ]]; then
+  skip "tpm already cloned — update with: git -C $TPM pull"
+else
+  run mkdir -p "$(dirname "$TPM")"
+  run git clone --depth 1 https://github.com/tmux-plugins/tpm.git "$TPM"
+  ok "tpm cloned — prefix + I inside tmux installs tmux-resurrect"
+fi
+
 # ── Font ─────────────────────────────────────────────────────────────
 # The Nerd Font variant carries the powerline separators and icons the
 # tmux status bar draws. Without it the bar renders as tofu boxes.
