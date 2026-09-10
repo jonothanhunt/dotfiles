@@ -8,39 +8,31 @@
 --
 -- No single built-in gives this directly: v:relnum counts logical lines,
 -- and v:virtnum only tells you a row's wrap-index *within* one logical
--- line, not its distance from the cursor. nvim_win_text_height() (0.10+)
--- gives the real screen-row count between two points, folds and all, which
--- is what this is built on — recomputed as a cache on cursor move/scroll
--- rather than inside the statuscolumn expression itself, since that's
--- evaluated per drawn row and the option's own docs warn an expensive
--- per-row expression hurts render performance.
+-- line, not its distance from the cursor. This walks from the window's top
+-- line down, using nvim_win_text_height() (0.10+, folds included) to get
+-- each line's own row count, and stamps every row it passes with its actual
+-- window row (1-indexed, matching winline()) — then every offset is just
+-- that minus the cursor's own winline(). Recomputed as a cache on cursor
+-- move/scroll rather than inside the statuscolumn expression itself, since
+-- that's evaluated per drawn row and the option's own docs warn an
+-- expensive per-row expression hurts render performance.
+--
+-- An earlier version tried to get the distance directly via
+-- nvim_win_text_height's start_vcol/end_vcol, anchoring every line to its
+-- own vcol 0 (virtnum 0) and adding the cursor's virtcol as an offset by
+-- hand. That doesn't hold: end_vcol's "rounded up to full screen lines"
+-- rounding (see :h nvim_win_text_height) doesn't compose the way plain
+-- point-to-point distance would suggest, and it showed up as every row
+-- from the window top down to the cursor's own row being off by a
+-- consistent amount whenever the cursor sat anywhere but a wrapped line's
+-- very first row. Walking forward from a known-good anchor (the window
+-- top) with whole-line height queries only avoids vcol arithmetic
+-- entirely, so there's nothing left to get subtly wrong.
 
 local M = {}
 
 ---@type table<integer, table<string, integer>> winid -> "lnum:virtnum" -> signed offset
 local cache = {}
-
---- Signed screen-row distance between two (row, vcol) points, 0-based rows,
---- both directions handled since nvim_win_text_height only measures a range
---- low-to-high.
-local function screen_rows_between(win, row0, vcol0, row1, vcol1)
-  if row0 == row1 and vcol0 == vcol1 then
-    return 0
-  end
-  local lo_row, lo_vcol, hi_row, hi_vcol, sign
-  if row1 > row0 or (row1 == row0 and vcol1 > vcol0) then
-    lo_row, lo_vcol, hi_row, hi_vcol, sign = row0, vcol0, row1, vcol1, 1
-  else
-    lo_row, lo_vcol, hi_row, hi_vcol, sign = row1, vcol1, row0, vcol0, -1
-  end
-  local h = vim.api.nvim_win_text_height(win, {
-    start_row = lo_row,
-    start_vcol = lo_vcol,
-    end_row = hi_row,
-    end_vcol = hi_vcol,
-  })
-  return sign * h.all
-end
 
 function M.recompute(win)
   win = win or vim.api.nvim_get_current_win()
@@ -48,27 +40,19 @@ function M.recompute(win)
     return
   end
 
-  local cur = vim.api.nvim_win_get_cursor(win) -- {1-based lnum, 0-based byte col}
-  local cur_row0 = cur[1] - 1
-  local cur_vcol0 = vim.fn.virtcol({ cur[1], cur[2] + 1 }, false, win) - 1
-
-  local top = vim.fn.line("w0", win)
-  local bot = vim.fn.line("w$", win)
+  local cursor_winline, top, bot = unpack(vim.api.nvim_win_call(win, function()
+    return { vim.fn.winline(), vim.fn.line("w0"), vim.fn.line("w$") }
+  end))
 
   local t = {}
+  local row_counter = 1 -- window row (1-indexed) of the line currently being walked
   for lnum = top, bot do
     local row0 = lnum - 1
-    -- Distance from the cursor to this line's own first (virtnum 0) row.
-    local base = screen_rows_between(win, cur_row0, cur_vcol0, row0, 0)
     local height = vim.api.nvim_win_text_height(win, { start_row = row0, end_row = row0 }).all
     for v = 0, height - 1 do
-      -- virtnum always increases going DOWN the screen within one logical
-      -- line, regardless of whether that line sits above or below the
-      -- cursor — so this is unconditionally + v, never - v. (A line wholly
-      -- above the cursor with base = -5 has its virtnum=1 row at -4, one
-      -- row CLOSER to the cursor, not -6.)
-      t[lnum .. ":" .. v] = base + v
+      t[lnum .. ":" .. v] = (row_counter + v) - cursor_winline
     end
+    row_counter = row_counter + height
   end
   cache[win] = t
 end
@@ -76,16 +60,22 @@ end
 --- The 'statuscolumn' expression, called once per drawn row.
 function M.render()
   local win = vim.g.statusline_winid
-  if vim.v.virtnum == 0 and vim.v.relnum == 0 then
-    -- The cursor's own actual row — real file line number, same as native
-    -- hybrid number+relativenumber.
-    return "%=" .. vim.v.lnum .. " "
+  if vim.v.virtnum < 0 then
+    return "%= " -- diff filler / virtual lines: nothing meaningful to show
   end
 
   local t = cache[win]
-  local offset = t and t[vim.v.lnum .. ":" .. math.max(vim.v.virtnum, 0)]
-  if offset == nil or offset == 0 then
+  local offset = t and t[vim.v.lnum .. ":" .. vim.v.virtnum]
+  if offset == nil then
     return "%= "
+  end
+  if offset == 0 then
+    -- The cursor's actual display row — real file line number here,
+    -- wherever within its logical line that happens to be. Was previously
+    -- gated on virtnum == 0, which only ever showed it on a wrapped
+    -- paragraph's FIRST row regardless of which row the cursor was really
+    -- on, leaving the cursor's own row blank instead.
+    return "%=" .. vim.v.lnum .. " "
   end
   return "%=" .. math.abs(offset) .. " "
 end
